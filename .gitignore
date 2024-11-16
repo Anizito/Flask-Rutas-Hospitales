@@ -1,0 +1,9 @@
+env/
+
+*.pyc
+*.pyo
+
+*.log
+
+.vscode/
+*.swp
