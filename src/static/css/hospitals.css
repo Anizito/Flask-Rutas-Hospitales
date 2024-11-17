@@ -11,21 +11,43 @@
   color: #cccccc;
 }
 
+.buscar {
+  width: 300px;
+  margin: 20px 0 20px 1%;
+  position: relative; 
+  left: 0; 
+  display: inline-block;
+}
+
 .contenedor {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-}
-
-.buscar {
-  width: 300px;
-  margin: 20px 0 20px 5%;
+  align-items: flex-start; 
 }
 
 .tabla-hospitales {
-  width: 85%;
+  width: 100%; 
+  max-width: 100%; 
   margin: 20px auto;
   font-size: 12px;
+  overflow-y: auto; 
+  max-height: 680px; 
+  display: block; 
+  table-layout: fixed; 
+}
+
+.tabla-hospitales table {
+  width: 100%; 
+  border-collapse: collapse;
+}
+
+.tabla-hospitales tbody {
+  min-height: 100px;
+}
+
+.tabla-hospitales-contenedor {
+  width: 90%; 
+  margin: 20px auto;
 }
 
 .btn-custom {
@@ -36,4 +58,10 @@
   height: 35px;
 }
 
-
+.no-resultados {
+  font-size: 18px;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+  margin-top: 20px;
+}

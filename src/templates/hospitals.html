@@ -22,45 +22,51 @@
 <div class="contenedor">
   <div class="buscar">
     <input class="search-bar" type="search" placeholder="Buscar hospital...">
-    <button id="lupa" class="btn btn-custom btn-primary">Buscar</button>
   </div>
-  
-  <div class="tabla-hospitales">
-    <table>
-      {% set columnas = ['id_eess', 'nombre', 'direccion', 'id_ubigeo'] %}
-  
-      <thead>
-        <tr>
-          {% for columna in columnas %}
-            <th>{{ columna }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-  
-      <tbody>
-        {% for fila in datos %}
+  <div class="tabla-hospitales-contenedor">
+    <div class="tabla-hospitales">
+      <table>
+        {% set columnas = ['id_eess', 'nombre', 'direccion', 'id_ubigeo'] %}
+    
+        <thead>
           <tr>
             {% for columna in columnas %}
-              <td>{{ fila[columna] }}</td>
+              <th>{{ columna }}</th>
             {% endfor %}
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+    
+        <tbody>
+          {% for fila in datos %}
+            <tr>
+              {% for columna in columnas %}
+                <td>{{ fila[columna] }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="no-resultados" style="display: none;">No se encontraron resultados.</div>
+    </div>
   </div>
 </div>
 
 <script>
   const inputBuscar = document.querySelector('input[type="search"]');
+const botonBuscar = document.querySelector('#lupa');
 const tabla = document.querySelector('.tabla-hospitales table');
 
-inputBuscar.addEventListener('input', function() {
-  const textoBuscar = this.value.toLowerCase();
-  const filas = tabla.getElementsByTagName('tr');
+inputBuscar.addEventListener('input', buscar);
+botonBuscar.addEventListener('click', buscar);
+
+function buscar() {
+  const textoBuscar = inputBuscar.value.toLowerCase();
+  const filas = tabla.tBodies[0].rows;
+  let encontrado = false;
 
   for (let i = 0; i < filas.length; i++) {
     const fila = filas[i];
-    const celdas = fila.getElementsByTagName('td');
+    const celdas = fila.cells;
     let coincide = false;
 
     for (let j = 0; j < celdas.length; j++) {
@@ -73,11 +79,19 @@ inputBuscar.addEventListener('input', function() {
 
     if (coincide) {
       fila.style.display = '';
+      encontrado = true;
     } else {
       fila.style.display = 'none';
     }
   }
-});
+
+  const noResultados = document.querySelector('.no-resultados');
+  if (!encontrado && textoBuscar !== '') {
+    noResultados.style.display = 'block';
+  } else {
+    noResultados.style.display = 'none';
+  }
+}
 </script>
 
 
