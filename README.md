@@ -1,0 +1,1 @@
+# Flask Rutas Mínimas
