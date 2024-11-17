@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
 import pandas as pd
+import os
 
 from config import config
 
@@ -60,8 +61,9 @@ def home():
 
 @app.route('/hospitales', methods=['GET'])
 def hospitales():
-    datos = pd.read_csv('./hospitales.csv', sep=';')
-    return render_template('hospitales.html', datos=datos.to_dict('records'))
+    ruta_csv = os.path.join(os.path.dirname(__file__), 'hospitales.csv')
+    datos = pd.read_csv(ruta_csv, sep=';')
+    return render_template('hospitals.html', datos=datos.to_dict('records'))
 
 @app.route('/protected')
 @login_required

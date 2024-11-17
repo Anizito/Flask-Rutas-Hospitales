@@ -3,7 +3,7 @@
 {% block title %}Hospitals{% endblock %}
 
 {% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/hospitals.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -19,38 +19,66 @@
     </li>
   </ul>
 </nav>
+<div class="contenedor">
+  <div class="buscar">
+    <input class="search-bar" type="search" placeholder="Buscar hospital...">
+    <button id="lupa" class="btn btn-custom btn-primary">Buscar</button>
+  </div>
+  
+  <div class="tabla-hospitales">
+    <table>
+      {% set columnas = ['id_eess', 'nombre', 'direccion', 'id_ubigeo'] %}
+  
+      <thead>
+        <tr>
+          {% for columna in columnas %}
+            <th>{{ columna }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+  
+      <tbody>
+        {% for fila in datos %}
+          <tr>
+            {% for columna in columnas %}
+              <td>{{ fila[columna] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>id_eess</th>
-      <th>Código RENAES</th>
-      <th>Categoría</th>
-      <th>Nombre</th>
-      <th>Diresa</th>
-      <th>Red</th>
-      <th>Dirección</th>
-      <th>Longitud</th>
-      <th>Latitud</th>
-      <th>id_ubigeo</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for fila in datos %}
-      <tr>
-        <td>{{ fila['id_eess'] }}</td>
-        <td>{{ fila['codigo_renaes'] }}</td>
-        <td>{{ fila['categoria'] }}</td>
-        <td>{{ fila['nombre'] }}</td>
-        <td>{{ fila['diresa'] }}</td>
-        <td>{{ fila['red'] }}</td>
-        <td>{{ fila['direccion'] }}</td>
-        <td>{{ fila['longitud'] }}</td>
-        <td>{{ fila['latitud'] }}</td>
-        <td>{{ fila['id_ubigeo'] }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<script>
+  const inputBuscar = document.querySelector('input[type="search"]');
+const tabla = document.querySelector('.tabla-hospitales table');
+
+inputBuscar.addEventListener('input', function() {
+  const textoBuscar = this.value.toLowerCase();
+  const filas = tabla.getElementsByTagName('tr');
+
+  for (let i = 0; i < filas.length; i++) {
+    const fila = filas[i];
+    const celdas = fila.getElementsByTagName('td');
+    let coincide = false;
+
+    for (let j = 0; j < celdas.length; j++) {
+      const celda = celdas[j];
+      if (celda.textContent.toLowerCase().includes(textoBuscar)) {
+        coincide = true;
+        break;
+      }
+    }
+
+    if (coincide) {
+      fila.style.display = '';
+    } else {
+      fila.style.display = 'none';
+    }
+  }
+});
+</script>
+
 
 {% endblock %}

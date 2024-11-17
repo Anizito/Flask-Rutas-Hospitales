@@ -1,0 +1,39 @@
+.navbar-custom {
+  background-color: #3865B9;
+  color: #ffffff;
+}
+
+.navbar-custom .navbar-nav .nav-link {
+  color: #ffffff;
+}
+
+.navbar-custom .navbar-nav .nav-link:hover {
+  color: #cccccc;
+}
+
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.buscar {
+  width: 300px;
+  margin: 20px 0 20px 5%;
+}
+
+.tabla-hospitales {
+  width: 85%;
+  margin: 20px auto;
+  font-size: 12px;
+}
+
+.btn-custom {
+  margin-left: 10px;
+}
+
+.search-bar{
+  height: 35px;
+}
+
+
