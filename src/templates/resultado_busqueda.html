@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultado de la búsqueda{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/resultado_busqueda.css') }}">
+{% endblock %}
+
+{% block body %}
+<h1>Resultado de la búsqueda</h1>
+<p>Camino más corto entre {{ hospital1 }} y {{ hospital2 }}:</p>
+<p>Costo total: {{ cost }}</p>
+<p>Camino encontrado: {{ path | join(' -> ') }}</p>
+<img src="{{ url_for('static', filename='grafo_completo.png') }}" alt="Grafo Completo">
+<img src="{{ url_for('static', filename='camino_encontrado.png') }}" alt="Camino Encontrado">
+{% endblock %}

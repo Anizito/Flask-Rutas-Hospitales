@@ -20,14 +20,11 @@
   </ul>
 </nav>
 
-<!-- Contenido principal -->
-<!--<h1>Bienvenido, {{ current_user.fullname }}</h1>
-<a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a> -->
-
 <h2 class="p-3">Encontrar una ruta de centros de salud</h2>
-<form action="{{ url_for('home') }}" method="POST">
+<form action="{{ url_for('buscar') }}" method="POST">
   <div class="row">
     <div class="col-12">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group d-inline-block me-5">
         <label for="hospital1">Inicio</label>
         <input type="text" class="form-control w-100" id="hospital1" name="hospital1" required>
@@ -42,7 +39,6 @@
     <button type="submit" class="btn btn-primary btn-custom mx-2 mt-4 py-2">Buscar</button>
     <a href="{{ url_for('hospitales') }}" class="btn btn-primary btn-custom mx-2 mt-4 py-2">Ver hospitales</a>
   </div>
-  
 </form>
 
 <h2 class="text-start p-3">Historial de búsquedas:</h2>

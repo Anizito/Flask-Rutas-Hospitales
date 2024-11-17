@@ -4,8 +4,10 @@ from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
 import pandas as pd
 import os
-
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
 from config import config
+from a_star import astar, load_coordinates, read_adj_list
 
 # Models:
 from models.ModelUser import ModelUser
@@ -54,7 +56,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-
 @app.route('/home')
 def home():
     return render_template('home.html')
@@ -64,6 +65,14 @@ def hospitales():
     ruta_csv = os.path.join(os.path.dirname(__file__), 'hospitales.csv')
     datos = pd.read_csv(ruta_csv, sep=';')
     return render_template('hospitals.html', datos=datos.to_dict('records'))
+
+
+@app.route('/buscar', methods=['POST'])
+def buscar():
+    if request.method == 'POST':
+        hospital1 = request.form['hospital1']
+        hospital2 = request.form['hospital2']
+        return render_template('resultado_busqueda.html', hospital1=hospital1, hospital2=hospital2)
 
 @app.route('/protected')
 @login_required
