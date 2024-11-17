@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
+import pandas as pd
 
 from config import config
 
@@ -57,6 +58,10 @@ def logout():
 def home():
     return render_template('home.html')
 
+@app.route('/hospitales', methods=['GET'])
+def hospitales():
+    datos = pd.read_csv('./hospitales.csv', sep=';')
+    return render_template('hospitales.html', datos=datos.to_dict('records'))
 
 @app.route('/protected')
 @login_required

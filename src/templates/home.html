@@ -1,8 +1,50 @@
-{% extends './base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Home{% endblock %}
 
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
 {% block body %}
-<h1>Bienvenido, {{ current_user.fullname }}</h1>
-<a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom px-3">
+  <a class="navbar-brand fs-3 text-white" href="#">EasyHospital</a>
+
+  <ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+      <a class="nav-link fs-5" href="#">
+         {{ current_user.fullname }} <i class="bi bi-person-circle"></i>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- Contenido principal -->
+<!--<h1>Bienvenido, {{ current_user.fullname }}</h1>
+<a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a> -->
+
+<h2 class="p-3">Encontrar una ruta de centros de salud</h2>
+<form action="{{ url_for('home') }}" method="POST">
+  <div class="row">
+    <div class="col-12">
+      <div class="form-group d-inline-block me-5">
+        <label for="hospital1">Inicio</label>
+        <input type="text" class="form-control w-100" id="hospital1" name="hospital1" required>
+      </div>
+      <div class="form-group d-inline-block">
+        <label for="hospital2">Fin</label>
+        <input type="text" class="form-control w-100" id="hospital2" name="hospital2" required>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <button type="submit" class="btn btn-primary btn-custom mx-2 mt-4 py-2">Buscar</button>
+    <a href="{{ url_for('hospitales') }}" class="btn btn-primary btn-custom mx-2 mt-4 py-2">Ver hospitales</a>
+  </div>
+  
+</form>
+
+<h2 class="text-start p-3">Historial de búsquedas:</h2>
+
 {% endblock %}
