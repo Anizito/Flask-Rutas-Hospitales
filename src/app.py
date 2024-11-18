@@ -7,7 +7,10 @@ import os
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from config import config
-from a_star import astar, load_coordinates, read_adj_list
+from a_star import load_coordinates, read_adj_list, astar, generar_grafo_completo, generar_camino_encontrado
+import networkx as nx
+import matplotlib
+matplotlib.use('Agg')
 
 # Models:
 from models.ModelUser import ModelUser
@@ -69,10 +72,58 @@ def hospitales():
 
 @app.route('/buscar', methods=['POST'])
 def buscar():
-    if request.method == 'POST':
-        hospital1 = request.form['hospital1']
-        hospital2 = request.form['hospital2']
-        return render_template('resultado_busqueda.html', hospital1=hospital1, hospital2=hospital2)
+    hospital1 = request.form['hospital1']
+    hospital2 = request.form['hospital2']
+    
+    print(f"Hospital origen: {hospital1}, Hospital destino: {hospital2}")
+    
+    adj_list_file = os.path.join(os.path.dirname(__file__), 'lista_adyacencia.txt')
+    coords_file = os.path.join(os.path.dirname(__file__), 'hospitales.csv')
+
+    try:
+        adj_list = read_adj_list(adj_list_file)
+        print("Lista de adyacencia cargada correctamente.")
+        coords = load_coordinates(coords_file)
+        print("Coordenadas cargadas correctamente.")
+    except Exception as e:
+        print(f"Error al cargar archivos: {e}")
+        return "Error al cargar los datos", 500
+
+    G = nx.Graph()
+
+    try:
+        for node, neighbors in adj_list.items():
+            lat, lon = coords.get(node, (0, 0))  
+            G.add_node(node, lat=lat, lon=lon)
+            for neighbor, weight in neighbors:
+                G.add_edge(node, neighbor, weight=weight)
+        print("Grafo creado correctamente.")
+    except Exception as e:
+        print(f"Error al crear el grafo: {e}")
+        return "Error al crear el grafo", 500
+
+    try:
+        cost, path = astar(G, hospital1, hospital2)
+        print(f"Camino encontrado: {path} con costo {cost}")
+    except Exception as e:
+        print(f"Error al ejecutar A*: {e}")
+        return "Error en el cálculo de la ruta", 500
+
+    try:
+        generar_camino_encontrado(G, path)
+    except Exception as e:
+        print(f"Error al generar los gráficos: {e}")
+        return "Error al generar gráficos", 500
+
+    return render_template(
+    'resultado_busqueda.html',
+    hospital1=hospital1,
+    hospital2=hospital2,
+    cost=cost,
+    path=path,
+    grafo_completo='grafo_completo.png',
+    camino_encontrado='camino_encontrado.png'
+)
 
 @app.route('/protected')
 @login_required
@@ -93,4 +144,4 @@ if __name__ == '__main__':
     csrf.init_app(app)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
-    app.run()
+    app.run() 

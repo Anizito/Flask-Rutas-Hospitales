@@ -7,10 +7,25 @@
 {% endblock %}
 
 {% block body %}
+<nav class="navbar navbar-expand-lg navbar-custom px-3">
+  <a class="navbar-brand fs-3 text-white" href="#">EasyHospital</a>
+
+  <ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+      <a class="nav-link fs-5" href="#">
+         {{ current_user.fullname }} <i class="bi bi-person-circle"></i>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
 <h1>Resultado de la búsqueda</h1>
-<p>Camino más corto entre {{ hospital1 }} y {{ hospital2 }}:</p>
-<p>Costo total: {{ cost }}</p>
-<p>Camino encontrado: {{ path | join(' -> ') }}</p>
-<img src="{{ url_for('static', filename='grafo_completo.png') }}" alt="Grafo Completo">
+<p>Hospital de inicio: {{ hospital1 }}</p>
+<p>Hospital objetivo: {{ hospital2 }}</p>
+<p>Distancia total: {{ cost }} km</p>
+<p>Camino encontrado: {{ path }}</p>
+<!--<img src="{{ url_for('static', filename='grafo_completo.png') }}" alt="Grafo Completo">-->
 <img src="{{ url_for('static', filename='camino_encontrado.png') }}" alt="Camino Encontrado">
+
 {% endblock %}

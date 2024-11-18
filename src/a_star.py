@@ -3,7 +3,7 @@ import heapq
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
-
+import os
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371.0  
@@ -76,50 +76,29 @@ def astar(graph, start, goal):
     
     return float("inf"), []  
 
-def main():
-    
-    adj_list_file = "lista_adyacencia.txt"
-    coords_file = "filtered_hospitals.csv"  
-    adj_list = read_adj_list(adj_list_file)
-    coords = load_coordinates(coords_file)  
 
-    G = nx.Graph()
-
-    for node, neighbors in adj_list.items():
-        lat, lon = coords.get(node, (0, 0))  
-        G.add_node(node, lat=lat, lon=lon)
-        for neighbor, weight in neighbors:
-            G.add_edge(node, neighbor, weight=weight)
-
-    start_node = input("Ingrese el id_eess del hospital de inicio: ")
-    goal_node = input("Ingrese el id_eess del hospital objetivo: ")
-
-    cost, path = astar(G, start_node, goal_node) 
-
-    if cost != float("inf"):
-        print(f"Costo total: {cost:.6f}")
-        print(f"Camino encontrado: {' -> '.join(path)}")
-    else:
-        print("No se pudo encontrar un camino entre los nodos proporcionados.")
-
+def generar_grafo_completo(G):
     plt.figure(figsize=(8, 6))  
-    pos = nx.spring_layout(G, k=20) 
+    pos = nx.spring_layout(G, k=0.1) 
     nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=100, font_size=10, font_weight='bold')
     labels = nx.get_edge_attributes(G, 'weight')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
     plt.title("Grafo Completo")
-    plt.show()  
+    plt.savefig(os.path.join(os.path.dirname(__file__), 'static', 'grafo_completo.png'))
+    plt.close()
 
-    if path:
-        subgraph = nx.DiGraph()  
-        for i in range(len(path) - 1):
-            subgraph.add_edge(path[i], path[i + 1], weight=G[path[i]][path[i + 1]]['weight'])
 
-        plt.figure(figsize=(8, 6)) 
-        nx.draw(subgraph, pos, with_labels=True, node_color='lightgreen', node_size=500, font_size=10, font_weight='bold', edge_color='red', width=2)
-        subgraph_labels = nx.get_edge_attributes(subgraph, 'weight')
-        nx.draw_networkx_edge_labels(subgraph, pos, edge_labels=subgraph_labels)
-        plt.title("Camino Encontrado")
-        plt.show()  
+def generar_camino_encontrado(G, path):
+    subgraph = nx.DiGraph()  
+    for i in range(len(path) - 1):
+        subgraph.add_edge(path[i], path[i + 1], weight=G[path[i]][path[i + 1]]['weight'])
 
-#main()
+    plt.figure(figsize=(8, 6)) 
+    pos = nx.spring_layout(subgraph, k=0.1) 
+    nx.draw(subgraph, pos, with_labels=True, node_color='lightgreen', node_size=500, font_size=10, font_weight='bold', edge_color='red', width=2)
+    subgraph_labels = nx.get_edge_attributes(subgraph, 'weight')
+    nx.draw_networkx_edge_labels(subgraph, pos, edge_labels=subgraph_labels)
+    plt.title("Camino Encontrado")
+    plt.savefig(os.path.join(os.path.dirname(__file__), 'static', 'camino_encontrado.png'))
+    plt.close()
+
