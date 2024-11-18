@@ -13,7 +13,7 @@ CREATE TABLE `user` (
 
 
 INSERT INTO `user` (`id`, `username`, `password`, `fullname`) VALUES
-(1, 'OGARCIA', 'pbkdf2:sha256:260000$fiRyeVmApEki8uvm$40d93cdea3f941010f3eedfafd228db15c41810ce625a691ff8cb2491300b010', 'Oscar Garcia');
+(1, 'Gerald', 'pbkdf2:sha256:1000000$XA2eLJb8OZFCOYyk$f0d36b0a3d6876cfa4d8e6e07c2875fa402e3b665b86faa57e183a62cd1cc871', 'Gerald Serrano');
 
 
 ALTER TABLE `user`
