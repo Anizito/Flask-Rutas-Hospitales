@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import pandas as pd
 import os
 from flask_wtf import FlaskForm
@@ -60,8 +60,26 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/home')
+@login_required
 def home():
-    return render_template('home.html')
+    try:
+        cursor = db.connection.cursor()
+        cursor.execute(
+            """
+            SELECT hospital_origen, hospital_destino, distancia, fecha
+            FROM historial
+            WHERE user_id = %s
+            ORDER BY fecha DESC
+            """,
+            (current_user.id,)
+        )
+        historial = cursor.fetchall() 
+        print("Historial cargado correctamente.")
+    except Exception as e:
+        print(f"Error al cargar el historial: {e}")
+        historial = []
+
+    return render_template('home.html', historial=historial)
 
 @app.route('/hospitales', methods=['GET'])
 def hospitales():
@@ -132,6 +150,19 @@ def buscar():
             'lng': hospital_info['longitud'].values[0]
         })
 
+    try:
+        cursor = db.connection.cursor()
+        cursor.execute(
+            """
+            INSERT INTO historial (user_id, hospital_origen, hospital_destino, distancia)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (current_user.id, hospital1_nombre, hospital2_nombre, cost)
+        )
+        db.connection.commit()
+        print("Búsqueda guardada en el historial.")
+    except Exception as e:
+        print(f"Error al guardar en el historial: {e}")
     return render_template(
         'resultado_busqueda.html',
         hospital1=hospital1_nombre,

@@ -20,6 +20,8 @@
       </a>
     </li>
   </ul>
+
+  <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
 </nav>
 
 <h2 class="p-3">Encontrar una ruta de centros de salud</h2>
@@ -58,5 +60,28 @@
 </form>
 
 <h2 class="text-start p-3">Historial de búsquedas:</h2>
-
+{% if historial %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Hospital Origen</th>
+            <th>Hospital Destino</th>
+            <th>Distancia (km)</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in historial %}
+        <tr>
+            <td>{{ item[0] }}</td> 
+            <td>{{ item[1] }}</td> 
+            <td>{{ "%.2f" | format(item[2]) }}</td> 
+            <td>{{ item[3] }}</td> 
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay búsquedas registradas.</p>
+{% endif %}
 {% endblock %}
