@@ -107,23 +107,40 @@ def buscar():
         print(f"Camino encontrado: {path} con costo {cost}")
     except Exception as e:
         print(f"Error al ejecutar A*: {e}")
-        return "Error en el cálculo de la ruta", 500
-
+        flash("Ingrese identificadores válidos")
+        return redirect(url_for('home'))
+   
     try:
         generar_camino_encontrado(G, path)
     except Exception as e:
         print(f"Error al generar los gráficos: {e}")
         return "Error al generar gráficos", 500
 
+    ruta_csv = os.path.join(os.path.dirname(__file__), 'hospitales.csv')
+    datos = pd.read_csv(ruta_csv, sep=';')
+
+    hospital1_nombre = datos.loc[datos['id_eess'] == int(hospital1), 'nombre'].values[0]
+    hospital2_nombre = datos.loc[datos['id_eess'] == int(hospital2), 'nombre'].values[0]
+
+    path_info = []
+    for hop in path:
+        hospital_info = datos.loc[datos['id_eess'] == int(hop)]
+        path_info.append({
+            'id': hop,
+            'nombre': hospital_info['nombre'].values[0],
+            'lat': hospital_info['latitud'].values[0],
+            'lng': hospital_info['longitud'].values[0]
+        })
+
     return render_template(
-    'resultado_busqueda.html',
-    hospital1=hospital1,
-    hospital2=hospital2,
-    cost=cost,
-    path=path,
-    grafo_completo='grafo_completo.png',
-    camino_encontrado='camino_encontrado.png'
-)
+        'resultado_busqueda.html',
+        hospital1=hospital1_nombre,
+        hospital2=hospital2_nombre,
+        cost=cost,
+        path=path_info,
+        grafo_completo='grafo_completo.png',
+        camino_encontrado='camino_encontrado.png'
+    )
 
 @app.route('/protected')
 @login_required

@@ -4,9 +4,11 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/resultado_busqueda.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
 {% endblock %}
 
 {% block body %}
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom px-3">
   <a class="navbar-brand fs-3 text-white" href="#">EasyHospital</a>
 
@@ -19,13 +21,48 @@
   </ul>
 </nav>
 
+<!-- Contenido principal -->
+<div class="container mt-5">
+  <h1 class="text-center mb-5">Resultado de la búsqueda</h1>
+  <div class="row justify-content-center">
+    <div class="d-flex align-items-center">
+      <div class="col-md-7 me-4">
+        <div class="card card-custom shadow-sm">
+          <div class="card-body py-4 px-5 text-start">
+            <p class="card-text fs-5">Hospital de inicio: {{ hospital1 }}</p>
+            <p class="card-text fs-5">Hospital objetivo: {{ hospital2 }}</p>
+            <p class="card-text fs-5">Distancia total: {{ "%0.2f" | format(cost) }} km</p>
+            <p class="card-text fs-5">Camino encontrado:</p>
+            <ul class="list-group">
+              {% for hop in path %}
+                <li class="path list-group-item fs-5">{{ hop.id }} -> {{ hop.nombre }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 text-center">
+        <div id="map" style="height: 400px; width: 100%;"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<h1>Resultado de la búsqueda</h1>
-<p>Hospital de inicio: {{ hospital1 }}</p>
-<p>Hospital objetivo: {{ hospital2 }}</p>
-<p>Distancia total: {{ cost }} km</p>
-<p>Camino encontrado: {{ path }}</p>
-<!--<img src="{{ url_for('static', filename='grafo_completo.png') }}" alt="Grafo Completo">-->
-<img src="{{ url_for('static', filename='camino_encontrado.png') }}" alt="Camino Encontrado">
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script>
+  const path = {{ path | tojson }};
+
+  const map = L.map('map').setView([-12.1182384, -77.022067], 12);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+    subdomains: ['a', 'b', 'c'],
+  }).addTo(map);
+
+  path.forEach((hop) => {
+    const marker = L.marker([hop.lat, hop.lng]).addTo(map);
+    marker.bindPopup(hop.nombre);
+  });
+</script>
 
 {% endblock %}

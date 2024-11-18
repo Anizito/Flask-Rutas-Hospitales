@@ -10,3 +10,12 @@
 .navbar-custom .navbar-nav .nav-link:hover {
   color: #cccccc;
 }
+
+.card-custom{
+  width: 700px;
+  margin-right: 300px;
+}
+
+.path{
+  width: 100%;
+}
